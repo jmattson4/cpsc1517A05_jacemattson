@@ -20,7 +20,6 @@ namespace OOPpractice
 
         private int _Size;
         private string _Colour;
-        private int _Face;
 
         //Properties
         //a property is an external interface between the user
@@ -35,16 +34,63 @@ namespace OOPpractice
         {
             get
             {
-                //takes internal values and returns it to the user 
+                //takes internal value and returns it to the user 
                 return _Size;
             }
             set
             {
                 //takes the supplied user value and places it into
                 //  the internal private data member
-                // the incoming piece of data is placed into a special
+                //the incoming piece of data is placed into a special
                 //  variable that is called: Value
-                _Size = value;
+                //optionally you may place validation on the incoming 
+                //  value.
+                if (value >= 6 && value <= 20)
+                {
+                    _Size = value;
+                }
+                else
+                {
+                    // throws error message to the user.
+                    throw new Exception("Die cannot be spaced " + value.ToString() + "sides. Die must have between 6 and 20 sides");
+                }
+                
+            }
+        }
+
+        //Auto Implemented Property 
+        //is public
+        //it has a data type 
+        //it has a name 
+        //IT DOES NOT have an internal data member that you can DIRECTLY access
+        //the system will create, internally, a data storage area of the appropriate
+        //  datatype and manage the area.
+        //the only way to access the data of an Auto Implemented Property is via
+        //  the property 
+        //usually used when there is no need for any internal validation or other
+        //  property logic.
+        public int FaceValue { get; set; }
+
+
+        public string Colour
+        {
+            get
+            {
+                return _Colour;
+            }
+            set
+            {
+                //(value == null) this will fail for an empty string 
+                //(value == "") this will fail for a null value
+                if (string.IsNullOrEmpty(value))
+                {
+                    _Colour = value;
+                }
+                else
+                {
+                    throw new Exception("Die must have a proper color value");
+                }
+
             }
         }
         //Constructors
