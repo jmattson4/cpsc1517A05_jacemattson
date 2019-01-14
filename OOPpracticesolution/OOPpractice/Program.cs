@@ -10,6 +10,8 @@ namespace OOPpractice
     {
         static void Main(string[] args)
         {
+            Die 
+
         }
     }
 }
