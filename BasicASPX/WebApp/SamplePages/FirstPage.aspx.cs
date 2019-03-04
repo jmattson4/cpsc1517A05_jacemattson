@@ -18,7 +18,7 @@ namespace WebApp.SamplePages
 
         protected void PressMe_Click(object sender, EventArgs e)
         {
-            Output.Text = "hello there" + YourName.Text;
+            Output.Text = "hello there " + YourName.Text;
         }
     }
 }
