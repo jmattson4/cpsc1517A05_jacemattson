@@ -127,14 +127,14 @@ namespace WebApp.SamplePages
         protected void CollectionButton_Click(object sender, EventArgs e)
         {
             string submitChoice = CollectionList.SelectedValue;
-
-            TextBoxNumberChoice.Text = submitChoice;
+          
             if (submitChoice.Equals("Select..."))
             {
                 MessageLabel.Text = "Sorry that isnt a proper choice.";
             }
             else
             {
+                TextBoxNumberChoice.Text = submitChoice;
                 RadioButtonListChoice.SelectedValue = submitChoice;
                 if (submitChoice.Equals("2") || submitChoice.Equals("3"))
                 {
