@@ -16,7 +16,124 @@
 
         </div>
     </div>
-  
+    <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorFirstName" 
+        runat="server" 
+        ErrorMessage="First Name is a required field"
+        ControlToValidate="FirstName"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+    <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorLastName" 
+        runat="server" 
+        ErrorMessage="Last Name is a required field"
+        ControlToValidate="LastName"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+        <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorStreetAddress1" 
+        runat="server" 
+        ErrorMessage="Postal Code is a required field"
+        ControlToValidate="PostalCode"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+        <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorCity" 
+        runat="server" 
+        ErrorMessage="Your City is a required field"
+        ControlToValidate="City"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+        <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorProvince" 
+        runat="server" 
+        ErrorMessage="Your Province is a required field"
+        ControlToValidate="Province"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+    <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorPostalCode" 
+        runat="server" 
+        ErrorMessage="Postal Code is a required field"
+        ControlToValidate="PostalCode"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+        <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorEmail" 
+        runat="server" 
+        ErrorMessage="You Email Address is a required field"
+        ControlToValidate="EmailAddress"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+    <asp:RequiredFieldValidator 
+        ID="RequiredFieldValidatorCheckAnswer" 
+        runat="server" 
+        ErrorMessage="Please a nswer The skill testing question"
+        ControlToValidate="CheckAnswer"
+        Display="Dynamic"
+        SetFocusOnError="true"
+        ForeColor="Firebrick">
+    </asp:RequiredFieldValidator>
+    <%-- There is no field to demonstrate a range validation on this form the street address 
+        two will be used for this demonstration --%>
+    <asp:RangeValidator 
+        ID="RangeValidatorStreetAddress" runat="server"
+        ErrorMessage="enter 1-5 according to liking (1 strongly like, 5 strongly dislike)"
+        ControlToValidate="StreetAddress2"
+        Display="Dynamic"SetFocusOnError="true"
+        ForeColor="Firebrick" Type="Integer" 
+        MaximumValue="5" MinimumValue="1">
+    </asp:RangeValidator>
+    <asp:RegularExpressionValidator 
+        ID="RegularExpressionValidatorPostalCode" runat="server" 
+        ErrorMessage="Invalid Postal Code" ControlToValidate="PostalCode"
+        SetFocusOnError="true" Display="Dynamic"
+        ForeColor="Firebrick" ValidationExpression="[a-zA-z][0-9][a-zA-z][0-9][a-zA-z][0-9]">
+    </asp:RegularExpressionValidator>
+    <%-- sample of a datatype check using Compare --%>
+    <%--<asp:CompareValidator 
+        ID="CompareValidatorSkillTesting" runat="server" 
+        ErrorMessage="Skill testing answer is not a number"
+        ControlToValidate="CheckAnswer" Display="Dynamic"
+        SetFocusOnError="true" ForeColor="Firebrick"
+        Operator="DataTypeCheck" Type="Integer">
+    </asp:CompareValidator>--%>
+    <%--  sample of a constant value using a compare --%>
+    <asp:CompareValidator 
+        ID="CompareValidatorCheckAnswer" runat="server" 
+        ErrorMessage="Skill testing answer is not a number"
+        ControlToValidate="CheckAnswer" Display="Dynamic"
+        SetFocusOnError="true" ForeColor="Firebrick"
+        Operator="Equal" Type="Integer" ValueToCompare="15">
+    </asp:CompareValidator>
+    <%--sample of 2 field comparing using a Compare
+        we have no fields to test assume a password field--%>
+    <%--<asp:CompareValidator 
+        ID="CompareValidatorPassword" runat="server" 
+        ErrorMessage="Confirm password not the same"
+        ControlToValidate="ConfirmPassword" Display="Dynamic"
+        SetFocusOnError="true" ForeColor="Firebrick"
+        Operator="Equal" Type="String" ControlToCompare="Password">
+    </asp:CompareValidator>--%>
+    <%-- Display all errors in one place  --%>
+    <asp:ValidationSummary 
+        ID="ValidationSummary1" runat="server"
+        HeaderText="Correct the Following concerns and resubmit"
+        CssClass="alert alert-danger"/>
     <div class="row">
         <div class ="col-md-6">
             <fieldset class="form-horizontal">
@@ -85,10 +202,13 @@
         <div class="col-md-6">   
             <div class="col-md-offset-2">
                 <p>
-                    <asp:Button ID="Submit" runat="server" Text="Submit" />&nbsp;&nbsp;
-                    <asp:Button ID="Clear" runat="server" Text="Clear" CausesValidation="true"  />
+                    <asp:Button ID="Submit" runat="server" Text="Submit" OnClick="Submit_Click" />&nbsp;&nbsp;
+                    <asp:Button ID="Clear" runat="server" Text="Clear" CausesValidation="true" OnClick="Clear_Click"  />
                 </p>
-                <asp:Label ID="Message" runat="server" ></asp:Label><br />
+                <asp:Label ID="Message" runat="server" ></asp:Label>
+                <asp:GridView ID="ContestEntryGrid" runat="server">
+                </asp:GridView>
+                <br />
             
             </div>
         </div>
