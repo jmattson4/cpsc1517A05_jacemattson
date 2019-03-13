@@ -254,6 +254,16 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NorthwindData\NorthwindData.csproj">
+      <Project>{aaf3bd45-8ee7-436d-9649-786a72004930}</Project>
+      <Name>NorthwindData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NorthwindSystem\NorthwindSystem.csproj">
+      <Project>{2ab3b596-5265-4825-876e-d400ea2a4183}</Project>
+      <Name>NorthwindSystem</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
