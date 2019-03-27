@@ -28,10 +28,5 @@ namespace NorthwindSystem.BLL
                 return context.Categories.ToList();
             }
         }
-        public List<Category> Category_GetBySupplier(int supplierId)
-        {
-
-        }
-
     }
 }

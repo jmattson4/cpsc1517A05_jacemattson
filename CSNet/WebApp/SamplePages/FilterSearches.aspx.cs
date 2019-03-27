@@ -334,7 +334,7 @@ namespace WebApp.NorthwindPages
 
         protected void FindCategories_Click(object sender, EventArgs e)
         {
-            if (CategoryListV5.SelectedIndex == 0)
+            if (SupplierListV5.SelectedIndex == 0)
             {
                 errormsgs.Add("Please select a Supplier from the list.");
                 LoadMessageDisplay(errormsgs, "alert alert-info");
@@ -345,12 +345,29 @@ namespace WebApp.NorthwindPages
             {
                 try
                 {
-                    CategoryController sysmgr = new CategoryController();
-                    List<CategoryController> info = sysmgr.ca
+                    SupplierController sysmgr = new SupplierController();
+                    List<SupplierCategories> info = sysmgr.Suppliers_GetCategories(int.Parse(SupplierListV5.SelectedValue));
+                    if (info.Count == 0)
+                    {
+                        errormsgs.Add("No data found for that supplier.");
+                        LoadMessageDisplay(errormsgs, "alert alert-info");
+                    }
+                    else
+                    {
+                        info.Sort((x, y) => x.CategoryID.CompareTo(y.CategoryID));
+                        CategoryListV5.DataSource = info;
+                        CategoryListV5.DataTextField = nameof(SupplierCategories.CategoryName);
+                        CategoryListV5.DataValueField = nameof(SupplierCategories.CategoryID);
+                        CategoryListV5.DataBind();
+                        CategoryListV5.Items.Insert(0, "select....");
+                        ProductsGridViewV5.DataSource = null;
+                        ProductsGridViewV5.DataBind();
+                    }
                 }
                 catch (Exception ex)
                 {
-                    
+                    errormsgs.Add(GetInnerException(ex).ToString());
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
                 }
             }
         }
