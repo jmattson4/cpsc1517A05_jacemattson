@@ -20,6 +20,7 @@ namespace WebApp.NorthwindPages
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            //clear out all old messages from the datalist control
             Message.DataSource = null;
             Message.DataBind();
 
@@ -120,7 +121,16 @@ namespace WebApp.NorthwindPages
 
         protected void Clear_Click(object sender, EventArgs e)
         {
-
+            ProductID.Text = "";
+            ProductName.Text = "";
+            SupplierList.SelectedIndex = 0;
+            CategoryList.SelectedIndex = 0;
+            QuantityPerUnit.Text = "";
+            UnitPrice.Text = "";
+            UnitsInStock.Text = "";
+            UnitsOnOrder.Text = "";
+            ReorderLevel.Text = "";
+            Discontinued.Checked = false;
         }
 
         protected void AddProduct_Click(object sender, EventArgs e)
@@ -133,13 +143,17 @@ namespace WebApp.NorthwindPages
                 if (SupplierList.SelectedIndex == 0)
                 {
                     errormsgs.Add("Please select a supplier for the search");
-                    LoadMessageDisplay(errormsgs, "alert alert-warning");
 
                 }
-                else if(CategoryList.SelectedIndex == 0)
+                if(CategoryList.SelectedIndex == 0)
                 {
                     errormsgs.Add("Please select a category for the search");
-                    LoadMessageDisplay(errormsgs, "alert alert-warning");
+                }
+                //all code behind logical validation errors are captured
+                //  and reported at once 
+                if (errormsgs.Count() > 0)
+                {
+                    LoadMessageDisplay(errormsgs, "alert alert-info");
                 }
                 else
                 {
@@ -232,6 +246,207 @@ namespace WebApp.NorthwindPages
 
                 }
             //}
+        }
+
+        protected void UpdateProduct_Click(object sender, EventArgs e)
+        {
+            //if (page.isvalid)
+            //{
+            //add any additional logic validiton required for processing
+            //in this example we will assume the supplierid and categoryid
+            //  are required.
+            if (SupplierList.SelectedIndex == 0)
+            {
+                errormsgs.Add("Please select a supplier for the search");
+
+            }
+            if (CategoryList.SelectedIndex == 0)
+            {
+                errormsgs.Add("Please select a category for the search");
+            }
+            //on an update you MUST ENSURE that the primary key valye exists for 
+            //  use by the update
+            int productid = 0;
+            if (!int.TryParse(ProductID.Text.Trim(), out productid))
+            {
+                errormsgs.Add("Invalid or missing Product ID");
+            }
+            //all code behind logical validation errors are captured
+            //  and reported at once 
+            if (errormsgs.Count() > 0)
+            {
+                LoadMessageDisplay(errormsgs, "alert alert-info");
+            }
+            else
+            {
+                try
+                {
+                    //create an instance of Product
+                    Product item = new Product();
+                    //collect the data from the webform and place
+                    //  in the Product Instance
+
+                    //on the update the primary identity key value MUST
+                    //  also be loaded to the instance
+                    item.ProductID = int.Parse(ProductID.Text.Trim());
+                    item.ProductName = ProductName.Text;
+                    item.SupplierID = int.Parse(SupplierList.SelectedValue);
+                    item.CategoryID = int.Parse(CategoryList.SelectedValue);
+                    item.QuantityPerUnit = string.IsNullOrEmpty(QuantityPerUnit.Text.Trim()) ? null : QuantityPerUnit.Text.Trim();
+                    if (string.IsNullOrEmpty(UnitPrice.Text))
+                    {
+                        item.UnitPrice = null;
+                    }
+                    else
+                    {
+                        item.UnitPrice = decimal.Parse(UnitPrice.Text);
+                    }
+                    if (string.IsNullOrEmpty(UnitsInStock.Text))
+                    {
+                        item.UnitsInStock = null;
+                    }
+                    else
+                    {
+                        item.UnitsInStock = Int16.Parse(UnitsInStock.Text);
+                    }
+                    if (string.IsNullOrEmpty(UnitsOnOrder.Text))
+                    {
+                        item.UnitsOnOrder = null;
+                    }
+                    else
+                    {
+                        item.UnitsOnOrder = Int16.Parse(UnitsOnOrder.Text);
+                    }
+                    if (string.IsNullOrEmpty(ReorderLevel.Text))
+                    {
+                        item.ReorderLevel = null;
+                    }
+                    else
+                    {
+                        item.ReorderLevel = Int16.Parse(ReorderLevel.Text);
+                    }
+                    //handling of discontinued needs to take the current value
+                    //  from the form
+                    item.Discontinued = Discontinued.Checked;
+                    //connect to the appropriate BLL controller
+                    ProductController sysmgr = new ProductController();
+                    //issue a call to the appropriate BLL controller method
+                    int rowsAffected = sysmgr.Product_Update(item);
+                    //Handle results
+                    if (rowsAffected == 0)
+                    {
+                        errormsgs.Add(ProductName.Text + " has not been updated. Search for another product. ");
+                        LoadMessageDisplay(errormsgs, "alert alert-warning");
+                        BindProductList();
+                    }
+                    else
+                    {
+                        errormsgs.Add(ProductName.Text + " has been updated ");
+                        LoadMessageDisplay(errormsgs, "alert alert-success");
+                        BindProductList();
+                        ProductList.SelectedValue = ProductID.Text;
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    UpdateException updateException = (UpdateException)ex.InnerException;
+                    if (updateException.InnerException != null)
+                    {
+                        errormsgs.Add(updateException.InnerException.Message.ToString());
+                    }
+                    else
+                    {
+                        errormsgs.Add(updateException.Message);
+                    }
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (var entityValidationErrors in ex.EntityValidationErrors)
+                    {
+                        foreach (var validationError in entityValidationErrors.ValidationErrors)
+                        {
+                            errormsgs.Add(validationError.ErrorMessage);
+                        }
+                    }
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
+                }
+                catch (Exception ex)
+                {
+                    errormsgs.Add(GetInnerException(ex).ToString());
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
+                }
+
+            }
+            //}
+        }
+
+        protected void RemoveProduct_Click(object sender, EventArgs e)
+        {
+            int productid = 0;
+            if (!int.TryParse(ProductID.Text.Trim(), out productid))
+            {
+                errormsgs.Add("Invalid or missing Product ID");
+            }
+            if (errormsgs.Count() > 0)
+            {
+                LoadMessageDisplay(errormsgs, "alert alert-info");
+            }
+            else
+            {
+                try
+                {
+                    //connect to the appropriate BLL controller
+                    ProductController sysmgr = new ProductController();
+                    //issue a call to the appropriate BLL controller method
+                    int rowsAffected = sysmgr.Product_Delete(int.Parse(ProductID.Text.Trim()));
+                    //Handle results
+                    if (rowsAffected == 0)
+                    {
+                        errormsgs.Add(ProductName.Text + " has not been discontinued. Search for another product. ");
+                        LoadMessageDisplay(errormsgs, "alert alert-warning");
+                        BindProductList();
+                    }
+                    else
+                    {
+                        errormsgs.Add(ProductName.Text + " has been discontinued. ");
+                        LoadMessageDisplay(errormsgs, "alert alert-success");
+                        BindProductList();
+                        //ONLY if it is a LOGICAL DELETE
+                        ProductList.SelectedValue = ProductID.Text;
+                        Discontinued.Checked = true;
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    UpdateException updateException = (UpdateException)ex.InnerException;
+                    if (updateException.InnerException != null)
+                    {
+                        errormsgs.Add(updateException.InnerException.Message.ToString());
+                    }
+                    else
+                    {
+                        errormsgs.Add(updateException.Message);
+                    }
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (var entityValidationErrors in ex.EntityValidationErrors)
+                    {
+                        foreach (var validationError in entityValidationErrors.ValidationErrors)
+                        {
+                            errormsgs.Add(validationError.ErrorMessage);
+                        }
+                    }
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
+                }
+                catch (Exception ex)
+                {
+                    errormsgs.Add(GetInnerException(ex).ToString());
+                    LoadMessageDisplay(errormsgs, "alert alert-danger");
+                }
+            }
         }
     }
 }
